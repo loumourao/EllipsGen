@@ -106,14 +106,14 @@ T.columns = parameters
 T.to_csv('data.csv', index=False)
 
 # Visualization: Display a Random Pair of Ellipses
-pair = 0
-E_i = param[pair, 0:4]
-E_j = param[pair, 5:9]
-x_i = np.array([x[pair, 0],
-                y[pair, 0]])
-x_j = np.array([x[pair, 1],
-                y[pair, 1]])
-f = ellipsegraph(1, E_i, E_j, 3, x_i, x_j)
+pair = 1
+E_i = param[pair, 0:5]
+E_j = param[pair, 5:10]
+x_i = np.array([[x[pair, 0]],
+                [y[pair, 0]]])
+x_j = np.array([[x[pair, 1]],
+                [y[pair, 1]]])
+ellipsegraph(1, E_i, E_j, 3, x_i, x_j)
 
 # Test point membership for the displayed pair
 p1inE, p1inH, p1ok = membership_test(x_i, E_i, E_j)

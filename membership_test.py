@@ -33,20 +33,18 @@ from matrices import matrices
 
 def membership_test(x, E_i, E_j):
     # Compute the quadratic matrices and centers of the ellipses
-    Q_i, o_i = matrices(E_i)
-    Q_j, o_j = matrices(E_j)
+    Q_i, o_i, *_ = matrices(E_i)
+    Q_j, o_j, *_ = matrices(E_j)
     
     # Compute the distance of the point from the first ellipse (equation)
     ellipse = (x - o_i).T @ Q_i @ (x - o_i)
     
     # Compute the cross product of the vectors from point to centers
-    locus = np.cross(np.array([[Q_i @ (x - o_i)],
-                               [0]]),
-                     np.array([[Q_j @ (x - o_j)],
-                               [0]]))
-    
+    locus = np.cross(np.append(Q_i @ (x - o_i), 0),
+                     np.append(Q_j @ (x - o_j), 0))
+
     # Check if the dot product of the vectors from the point to the ellipse
     # centers is negative
-    bon_point = np.dot(Q_i @ (x - o_i), Q_j @ (x - o_j)) < 0
+    bon_point = np.dot((Q_i @ (x - o_i)).T, Q_j @ (x - o_j)).squeeze().item() < 0
 
     return ellipse, locus, bon_point
