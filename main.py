@@ -34,11 +34,8 @@ from membership_test import membership_test
 #
 # -------------------------------------------------------------------------
 
-# Just for debugging purposes:
-# Don't forget to change N to 10000
-# and rng.ran() to np.random.rand()
-# for normal functionality
-# line 109 should also be: pair = np.random.randint(N)
+# Random seeding that match MATLAB environment
+# for debugging purposes
 rng = np.random.RandomState(42)
 
 # Initialization

@@ -79,4 +79,4 @@ def ellipsegraph(fignumber, E_i, E_j, config_num, *args):
     for arg in args:
         plt.scatter(arg[0], arg[1])
     
-    plt.savefig('figure.png')
+    plt.savefig('ellipses_pair.png')
