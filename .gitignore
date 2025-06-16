@@ -1,4 +1,7 @@
+# Directories
 EllipsGenVenv/
-deprecated_matlab_files/
 __pycache__/
+
+# Output files
 data.csv
+ellipses_pair.png
