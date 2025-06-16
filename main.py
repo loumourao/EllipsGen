@@ -34,15 +34,8 @@ from membership_test import membership_test
 #
 # -------------------------------------------------------------------------
 
-# Just for debugging purposes:
-# Don't forget to change N to 10000
-# and rng.ran() to np.random.rand()
-# for normal functionality
-# line 109 should also be: pair = np.random.randint(N)
-rng = np.random.RandomState(42)
-
 # Initialization
-N = 2 # Number of ellipse pairs
+N = 10000 # Number of ellipse pairs
 
 # Preallocate arrays for efficiency
 A = np.zeros((2, 2))
@@ -55,14 +48,14 @@ data = np.zeros((N, 38))
 # Generate Random Ellipse Pairs
 for i in range(0, N):
     # Randomly generate ellipse parameters
-    gamma_i = 1 + 19*rng.rand()
-    omega_i = 1 + 19*rng.rand()
-    theta_i = np.pi*rng.rand()
-    gamma_j = 1 + 19*rng.rand()
-    theta_j = np.pi*rng.rand()
-    c_j = rng.rand(2, 1) # Center of the second ellipse
-    phi = -np.pi + 2*np.pi*rng.rand() # Random rotation angle
-    epsilon_bar = np.sign(-1 + 2*rng.rand())*10**(-(1 + 1*rng.rand())) # "Distance"
+    gamma_i = 1 + 19*np.random.rand()
+    omega_i = 1 + 19*np.random.rand()
+    theta_i = np.pi*np.random.rand()
+    gamma_j = 1 + 19*np.random.rand()
+    theta_j = np.pi*np.random.rand()
+    c_j = np.random.rand(2, 1) # Center of the second ellipse
+    phi = -np.pi + 2*np.pi*np.random.rand() # Random rotation angle
+    epsilon_bar = np.sign(-1 + 2*np.random.rand())*10**(-(1 + 1*np.random.rand())) # "Distance"
     
     # Compute ellipse configurations
     E_i, E_j, x_i, x_j, epsilon = configurations(gamma_i, omega_i, theta_i, gamma_j, theta_j, c_j, phi, epsilon_bar)
@@ -106,14 +99,14 @@ T.columns = parameters
 T.to_csv('data.csv', index=False)
 
 # Visualization: Display a Random Pair of Ellipses
-pair = 0
-E_i = param[pair, 0:4]
-E_j = param[pair, 5:9]
-x_i = np.array([x[pair, 0],
-                y[pair, 0]])
-x_j = np.array([x[pair, 1],
-                y[pair, 1]])
-f = ellipsegraph(1, E_i, E_j, 3, x_i, x_j)
+pair = np.random.randint(N)
+E_i = param[pair, 0:5]
+E_j = param[pair, 5:10]
+x_i = np.array([[x[pair, 0]],
+                [y[pair, 0]]])
+x_j = np.array([[x[pair, 1]],
+                [y[pair, 1]]])
+ellipsegraph(1, E_i, E_j, 3, x_i, x_j)
 
 # Test point membership for the displayed pair
 p1inE, p1inH, p1ok = membership_test(x_i, E_i, E_j)

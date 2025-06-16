@@ -26,7 +26,7 @@ from matrices import matrices
 
 def ellipsegraph(fignumber, E_i, E_j, config_num, *args):
     # Create a figure and hold the plot for subsequent elements
-    f = plt.figure(fignumber)
+    plt.figure(fignumber)
     
     # Generate and plot the first ellipse (red)
     x_ellipse, y_ellipse = init_ellipse(E_i[0], E_i[1], E_i[3], E_i[4], E_i[2])
@@ -40,16 +40,16 @@ def ellipsegraph(fignumber, E_i, E_j, config_num, *args):
     plt.axis('equal')
     
     # Set the ylabel based on the selected configuration
-    config_name = ('$\bar y$', '$\hat y$', '$y$', '$\tilde y$', '$\mathring y$')
+    config_name = ('$\bar y$', '$\hat y$', '$y$', '$\tildey$', '$\mathring y$')
     plt.ylabel(config_name[config_num], usetex=True)
     
     # Set the xlabel based on the selected configuration
     config_name = ('$\bar x$', '$\hat x$', '$x$', '$\tilde x$', '$\mathring x$')
     plt.xlabel(config_name[config_num], usetex=True)
-    
+
     # Compute the quadratic matrices and centers of the ellipses
-    Q_i, o_i = matrices(E_i)
-    Q_j, o_j = matrices(E_j)
+    Q_i, o_i, *_ = matrices(E_i)
+    Q_j, o_j, *_ = matrices(E_j)
     
     # Calculate the distance and unit vector between the ellipse centers
     d = np.linalg.norm(o_j - o_i)
@@ -61,22 +61,22 @@ def ellipsegraph(fignumber, E_i, E_j, config_num, *args):
     
     # Number of points for the locus
     N_locus = 100
-    x_locus = np.zeros((1, 1 + N_locus))
-    y_locus = np.zeros((1, 1 + N_locus))
+    x_locus = np.zeros(1 + N_locus)
+    y_locus = np.zeros(1 + N_locus)
     
     # Calculate the points of the co-gradient locus
     point_i = 0
-    for k in np.arange(0, 1, 1/N_locus):
-        point = Choi[k]
+    for k in np.linspace(0, 1, N_locus+1):
+        point = Choi(k)
         x_locus[point_i] = point[0]
         y_locus[point_i] = point[1]
         point_i += 1
-    
+
     # Plot the co-gradient locus (cyan)
     plt.plot(x_locus + o_i[0], y_locus + o_i[1], 'c-', linewidth=2)
-
+    
     # Plot any additional points provided as inputs
     for arg in args:
         plt.scatter(arg[0], arg[1])
-
-    return f
+    
+    plt.savefig('ellipses_pair.png')
