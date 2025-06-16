@@ -1,2 +1,4 @@
 EllipsGenVenv/
 deprecated_matlab_files/
+__pycache__/
+data.csv

@@ -51,7 +51,7 @@ def contact_solve(E_i, E_j):
     exitflag1 = result1.converged
     output1 = {'iterations': result1.iterations,
                'function_calls': result1.function_calls,
-               'flag': 'converged' if exitflag1 else 'not converged'}
+               'flag': result1.flag}
     x_i = w(parameter_1)
     
     # Solve for the second contact point

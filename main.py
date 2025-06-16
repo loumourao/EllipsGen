@@ -34,12 +34,19 @@ from membership_test import membership_test
 #
 # -------------------------------------------------------------------------
 
+# Just for debugging purposes:
+# Don't forget to change N to 10000
+# and rng.ran() to np.random.rand()
+# for normal functionality
+# line 109 should also be: pair = np.random.randint(N)
+rng = np.random.RandomState(42)
+
 # Initialization
-N = 10000 # Number of ellipse pairs
+N = 2 # Number of ellipse pairs
 
 # Preallocate arrays for efficiency
 A = np.zeros((2, 2))
-B = np.zeros((1, 10))
+B = np.zeros(10)
 x = np.zeros((N, 2))
 y = np.zeros((N, 2))
 param = np.zeros((N, 10))
@@ -48,42 +55,42 @@ data = np.zeros((N, 38))
 # Generate Random Ellipse Pairs
 for i in range(0, N):
     # Randomly generate ellipse parameters
-    gamma_i = 1 + 19*np.random.rand()
-    omega_i = 1 + 19*np.random.rand()
-    theta_i = np.pi*np.random.rand()
-    gamma_j = 1 + 19*np.random.rand()
-    theta_j = np.pi*np.random.rand()
-    c_j = np.random.rand(2, 1) # Center of the second ellipse
-    phi = -np.pi + 2*np.pi*np.random.rand() # Random rotation angle
-    epsilon_bar = np.sign(-1 + 2*np.random.rand())*10^(-(1 + 1*np.random.rand())) # "Distance"
+    gamma_i = 1 + 19*rng.rand()
+    omega_i = 1 + 19*rng.rand()
+    theta_i = np.pi*rng.rand()
+    gamma_j = 1 + 19*rng.rand()
+    theta_j = np.pi*rng.rand()
+    c_j = rng.rand(2, 1) # Center of the second ellipse
+    phi = -np.pi + 2*np.pi*rng.rand() # Random rotation angle
+    epsilon_bar = np.sign(-1 + 2*rng.rand())*10**(-(1 + 1*rng.rand())) # "Distance"
     
     # Compute ellipse configurations
     E_i, E_j, x_i, x_j, epsilon = configurations(gamma_i, omega_i, theta_i, gamma_j, theta_j, c_j, phi, epsilon_bar)
     
     # Store position and parameters
-    A = np.array([x_i, x_j])
-    B = np.array([E_i, E_j])
+    A = np.hstack((x_i, x_j))
+    B = np.hstack((E_i, E_j))
     x[i, :] = A[0, :]
     y[i, :] = A[1, :]
     param[i, :] = B
     
     # Store ellipse parameters and computed properties in the dataset
-    data[i, 0:4] = E_i
-    data[i, 5:6] = np.array([gamma_i, omega_i])
-    data[i, 7:8] = np.array([np.cos(theta_i), np.sin(theta_i)])
+    data[i, 0:5] = E_i
+    data[i, 5:7] = np.array([gamma_i, omega_i])
+    data[i, 7:9] = np.array([np.cos(theta_i), np.sin(theta_i)])
     Q_i, o_i, *_ = matrices(E_i) # Compute transformation matrix
-    data[i, 9:11] = np.array([Q_i[0,0], Q_i[0,1], Q_i[1,1]])
-    data[i, 12:15] = np.array([np.linalg.norm(o_i), np.atan2(o_i[1], o_i[0]), np.cos(np.atan2(o_i[1], o_i[0])), np.sin(np.atan2(o_i[1], o_i[0]))])
+    data[i, 9:12] = np.array([Q_i[0,0], Q_i[0,1], Q_i[1,1]])
+    data[i, 12:16] = np.array([np.linalg.norm(o_i), np.atan2(o_i[1,0], o_i[0,0]), np.cos(np.atan2(o_i[1,0], o_i[0,0])), np.sin(np.atan2(o_i[1,0], o_i[0,0]))])
     
-    data[i, 16:20] = E_j
+    data[i, 16:21] = E_j
     data[i, 21] = gamma_j
-    data[i, 22:24] = np.array([1, np.cos(theta_j), np.sin(theta_j)])
+    data[i, 22:25] = np.array([1, np.cos(theta_j), np.sin(theta_j)])
     Q_j, o_j, *_ = matrices(E_j)
-    data[i, 25:27] = np.array([Q_j(0,0), Q_j(0,1), Q_j(1,1)])
-    data[i, 28:31] = [np.linalg.norm(o_j), np.atan2(o_j[1], o_j[0]), np.cos(np.atan2(o_j[1], o_j[0])), np.cos(np.atan2(o_j[1], o_j[0]))]
+    data[i, 25:28] = np.array([Q_j[0,0], Q_j[0,1], Q_j[1,1]])
+    data[i, 28:32] = [np.linalg.norm(o_j), np.atan2(o_j[1,0], o_j[0,0]), np.cos(np.atan2(o_j[1,0], o_j[0,0])), np.cos(np.atan2(o_j[1,0], o_j[0,0]))]
     
     # Store contact point and perturbation information
-    data[i, 32:37] = np.array([x_i[0], x_i[1], x_j[0], x_j[1], np.sign(epsilon_bar)*np.linalg.norm(x_j - x_i), epsilon_bar])
+    data[i, 32:38] = np.array([x_i[0,0], x_i[1,0], x_j[0,0], x_j[1,0], np.sign(epsilon_bar)*np.linalg.norm(x_j - x_i), epsilon_bar])
 
 
 # Export Data to CSV File
@@ -99,7 +106,7 @@ T.columns = parameters
 T.to_csv('data.csv', index=False)
 
 # Visualization: Display a Random Pair of Ellipses
-pair = np.random.randint(N)
+pair = 0
 E_i = param[pair, 0:4]
 E_j = param[pair, 5:9]
 x_i = np.array([x[pair, 0],
